@@ -1,1 +1,1 @@
-# diff-to-html
+# Git diff viewer
