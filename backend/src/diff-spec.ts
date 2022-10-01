@@ -1,8 +1,18 @@
-import { DiffChunkType, DiffLineType } from './types'
+export enum DiffChunkType {
+  ADDED = 'added',
+  RENAMED = 'renamed',
+  CHANGED = 'changed',
+  DELETED = 'deleted',
+}
+
+export enum DiffLineType {
+  ADDED = 'added',
+  DELETED = 'deleted',
+  NORMAL = 'normal',
+}
 
 export interface DiffCollection {
   chunks: DiffChunk[]
-  parse(): void
 }
 
 export interface DiffChunk {
@@ -10,7 +20,6 @@ export interface DiffChunk {
   oldPath?: string
   newPath?: string
   blocks: DiffBlock[]
-  parse(chunk: string): void
 }
 
 export interface DiffBlock {
@@ -18,7 +27,6 @@ export interface DiffBlock {
   lines: DiffLine[]
   oldLines: number
   newLines: number
-  parse(block: string): void
 }
 
 export interface DiffLine {

@@ -1,4 +1,4 @@
-/nodejs-express/dist
-/nodejs-express/node_modules
-/vue-client/dist
-/vue-client/node_modules
+/backend/dist
+/backend/node_modules
+/frontend/dist
+/frontend/node_modules

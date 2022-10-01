@@ -1,10 +1,10 @@
 ![Screenshot](images/demo.png)
 
-To test the service, run the following commands:
+To check the service, run the following commands:
 ```bash
 # Run server
-$ cd nodejs-express && yarn dev
+$ cd backend && yarn install && yarn dev
 
 # Run client
-$ cd vue-client && yarn dev
+$ cd frontend && yarn install && yarn dev
 ```

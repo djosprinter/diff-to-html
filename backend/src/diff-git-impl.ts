@@ -1,5 +1,11 @@
-import { DiffBlock, DiffChunk, DiffCollection, DiffLine } from './diff-spec'
-import { DiffChunkType, DiffLineType } from './types'
+import {
+  DiffBlock,
+  DiffChunk,
+  DiffCollection,
+  DiffLine,
+  DiffChunkType,
+  DiffLineType,
+} from './diff-spec'
 
 export function parseDiffCollection(source: string): DiffCollection {
   return new DiffGitCollection(source)
@@ -36,6 +42,7 @@ export class DiffGitChunk implements DiffChunk {
   blocks: DiffGitBlock[] = []
 
   readonly DIFF_RENAME_SPEC = 'rename'
+  readonly DIFF_RENAME_FROM_SPEC = 'from'
   readonly DIFF_SPACE_SPEC = ' '
   readonly DIFF_OLD_FILE_NAME_SPEC = '---'
   readonly DIFF_NOTHING_SPEC = '/dev/null'
@@ -57,7 +64,7 @@ export class DiffGitChunk implements DiffChunk {
         case this.DIFF_RENAME_SPEC:
           this.type = DiffChunkType.RENAMED
           const infoStr = line.slice(spaceIndex + 1)
-          if (infoStr.indexOf('from') === 0) {
+          if (infoStr.indexOf(this.DIFF_RENAME_FROM_SPEC) === 0) {
             this.oldPath = infoStr.slice(5)
           } else {
             this.newPath = infoStr.slice(3)
@@ -73,7 +80,7 @@ export class DiffGitChunk implements DiffChunk {
             this.type = DiffChunkType.DELETED
             oldPath = oldPath.slice(2)
           } else {
-            oldPath = oldPath.slice(2)
+            oldPath = oldPath.slice(2) // через регулярку
             newPath = newPath.slice(2)
           }
           if (oldPath === newPath) {
@@ -87,8 +94,7 @@ export class DiffGitChunk implements DiffChunk {
       if (line.indexOf(this.DIFF_HUNK_HEADER_SPEC) === 0) {
         currentBlock = new DiffGitBlock(line)
         this.blocks.push(currentBlock)
-      }
-      if (currentBlock && (line.startsWith('+') || line.startsWith('-') || line.startsWith(' '))) {
+      } else if (currentBlock && (line.startsWith('+') || line.startsWith('-') || line.startsWith(' '))) {
         currentBlock.lines.push(new DiffGitLine(line))
       }
     })

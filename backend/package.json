@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "test": "jest --verbose ./__tests__/jest"
+    "start": "node dist/src/main.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/main.js\"",
+    "test": "jest ./__tests__/jest"
   },
   "keywords": [],
   "author": "",
