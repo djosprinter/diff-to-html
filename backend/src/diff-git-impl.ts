@@ -11,6 +11,10 @@ export function parseDiffCollection(source: string): DiffCollection {
   return new DiffGitCollection(source)
 }
 
+export function renderException(error: Error): string {
+  return `<div class="parse-error">${error.message}</div>`
+}
+
 const diffLineTypeMap  = new Map<string, DiffLineType>([
   ['+', DiffLineType.ADDED],
   ['-', DiffLineType.DELETED],
@@ -80,7 +84,7 @@ export class DiffGitChunk implements DiffChunk {
             this.type = DiffChunkType.DELETED
             oldPath = oldPath.slice(2)
           } else {
-            oldPath = oldPath.slice(2) // через регулярку
+            oldPath = oldPath.slice(2)
             newPath = newPath.slice(2)
           }
           if (oldPath === newPath) {
@@ -107,7 +111,7 @@ export class DiffGitBlock implements DiffBlock {
   oldLines = 0
   newLines = 0
 
-  readonly fragmentMatch = /^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@.*/
+  readonly blockMatch = /^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@.*/
 
   constructor(block: string) {
     this.block = block
@@ -115,11 +119,10 @@ export class DiffGitBlock implements DiffBlock {
   }
 
   parse(block: string): void {
-    const match = this.fragmentMatch.exec(block)
-    if (match) {
-      this.oldLines = Number(match[1])
-      this.newLines = Number(match[2])
-    }
+    const match = this.blockMatch.exec(block)
+    if (!match) throw new Error('Could not extract lines in info block!')
+    this.oldLines = Number(match[1])
+    this.newLines = Number(match[2])
   }
 }
 

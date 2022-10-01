@@ -60,4 +60,12 @@ textarea {
     width: 50%;
   }
 }
+
+.parse-error {
+  margin-top: 10px;
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 0.4rem;
+}
 </style>

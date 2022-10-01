@@ -1,6 +1,7 @@
 import {
   DiffBlock,
   DiffChunk,
+  DiffChunkType,
   DiffCollection,
   DiffLine,
   DiffLineType,
@@ -14,7 +15,7 @@ export function renderHtml(collection: DiffCollection): string {
     return (
       '<div class="d2h-file-list-wrapper">' +
         '<div class="d2h-file-list-header">' +
-          '<span class="d2h-file-list-title">Files changed ('+ collection.chunks.length +')</span>' +
+          `<span class="d2h-file-list-title">Files changed (${collection.chunks.length})</span>` +
         '</div>' +
       '</div>' +
       '<div class="d2h-wrapper">' +
@@ -28,6 +29,12 @@ function generateChunkHtml(item: DiffChunk): string {
   item.blocks.forEach(item => {
     blocksHtml += generateBlockHtml(item)
   })
+  item.oldPath
+  const fileName = item.type === DiffChunkType.RENAMED
+    ? `${item.oldPath} -> ${item.newPath}`
+    : item.type === DiffChunkType.DELETED
+      ? item.oldPath
+      : item.newPath
   return (
     '<div class="d2h-file-wrapper">' +
       '<div class="d2h-file-header">' +
@@ -36,15 +43,13 @@ function generateChunkHtml(item: DiffChunk): string {
             '<path d="M6 5H2v-1h4v1zM2 8h7v-1H2v1z m0 2h7v-1H2v1z m0 2h7v-1H2v1z m10-7.5v9.5c0 0.55-0.45 1-1 ' +
             '1H1c-0.55 0-1-0.45-1-1V2c0-0.55 0.45-1 1-1h7.5l3.5 3.5z m-1 0.5L8 2H1v12h10V5z"></path>' +
           '</svg>' +
-          '<span class="d2h-file-name">new.txt</span>' +
-        '<span class="d2h-tag d2h-'+item.type+' d2h-'+item.type+'-tag">'+ item.type?.toUpperCase() +'</span></span>' +
+          `<span class="d2h-file-name">${fileName}</span>` +
+        `<span class="d2h-tag d2h-${item.type} d2h-${item.type}-tag">${item.type?.toUpperCase()}</span></span>` +
       '</div>' +
       '<div class="d2h-file-diff">' +
       '<div class="d2h-code-wrapper">' +
         '<table class="d2h-diff-table">' +
-          '<tbody class="d2h-diff-tbody">' +
-            blocksHtml +
-          '</tbody>' +
+          `<tbody class="d2h-diff-tbody">${blocksHtml}</tbody>` +
         '</table>'+
       '</div>' +
       '</div>' +
@@ -82,7 +87,7 @@ function generateBlockHtml(item: DiffBlock): string {
     '<tr>' +
       '<td class="d2h-code-linenumber d2h-info"></td>' +
       '<td class="d2h-info">' +
-        '<div class="d2h-code-line">'+ item.block +'</div>' +
+        `<div class="d2h-code-line">${item.block}</div>` +
       '</td>' +
       '</tr>' +
       linesHtml
@@ -93,13 +98,13 @@ function generateLineHtml(line: DiffLine, num1: string, num2: string): string {
   const rowClassName = getRowClassName(line.type)
   return (
     '<tr>' +
-      '<td class="d2h-code-linenumber '+ rowClassName +'">' +
-        '<div class="line-num1">'+ num1 +'</div>' +
-        '<div class="line-num2">'+ num2 +'</div>' +
+      `<td class="d2h-code-linenumber ${rowClassName}">` +
+        `<div class="line-num1">${num1}</div>` +
+        `<div class="line-num2">${num2}</div>` +
       '</td>' +
-      '<td class="'+ rowClassName +'">' +
+      `<td class="${rowClassName}">` +
         '<div class="d2h-code-line">' +
-          '<span class="d2h-code-line-ctn">'+ line.line +'</span>' +
+          `<span class="d2h-code-line-ctn">${line.line}</span>` +
         '</div>' +
       '</td>' +
     '</tr>'
