@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import * as Diff2Html from 'diff2html';
+import { renderHtml } from './src/html-export';
+import { parseDiffCollection } from './src/diff-git-impl';
 
 dotenv.config();
 
@@ -19,9 +21,11 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.post('/parse', (req: Request, res: Response) => {
-  const diffJson = Diff2Html.parse(req.body.diff);
-  const diffHtml = Diff2Html.html(diffJson, { drawFileList: true });
-  res.send(diffHtml);
+  const collection = parseDiffCollection(req.body.diff)
+  res.send(renderHtml(collection))
+  // const diffJson = Diff2Html.parse(req.body.diff);
+  // const diffHtml = Diff2Html.html(diffJson, { drawFileList: true });
+  // res.send(diffHtml);
 });
 
 app.listen(port, () => {
